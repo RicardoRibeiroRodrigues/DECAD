@@ -5,18 +5,10 @@ music_hashes: public(HashMap[bytes32, bool])
 # ID incremental para novas músicas
 next_music_id: public(uint256)
 
-# Estrutura para armazenar coautores e suas participações
-# struct Contributor:
-    # wallet: address
-    # share: uint256  # Representa a porcentagem em pontos base (ex: 10000 = 100%)
-
 # Estrutura para uma música registrada
 struct MusicWork:
     title: String[100]
     artist: address
-    # contributors: HashMap[uint256, Contributor]
-    # contributor_count: uint256
-    # total_shares: uint256  # Deve sempre ser 10000 (100%)
     exists: bool
 
 @external
@@ -38,6 +30,7 @@ def pay_and_distribute(music_id: uint256):
     work: MusicWork = self.music_registry[music_id]
     assert work.exists, "Work doesnt exist"
     assert msg.value > 0, "Must send a value greater than 0"
+    assert msg.sender != work.artist, "Artist cannot pay themselves"
 
     send(work.artist, msg.value)
 

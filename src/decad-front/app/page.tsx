@@ -13,6 +13,8 @@ export default function Home() {
     })
     .then(function (receipt) {
       console.log("Transaction receipt:", receipt);
+      // Clear the input field after successful registration
+      setTitle("");
       alert("Music registered!");
     })
     .catch(function (error) {

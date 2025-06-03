@@ -7,7 +7,7 @@ declare global {
     }
 }
 
-const CONTRACT_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export interface MusicWork {
     title: string;
@@ -53,4 +53,20 @@ async function getAllMusicWorks() : Promise<(MusicWork & { id: number })[]> {
     }
 }
 
-export { web3, musicContract, getAllMusicWorks };
+async function payForMusicWork(id: number, amount: number) {
+    const accounts = await web3.eth.getAccounts();
+    await musicContract.methods.pay_and_distribute(id).send({
+      from: accounts[0],
+      value: web3.utils.toWei(amount, "ether"),
+    })
+    .then(function (receipt) {
+      console.log("Transaction receipt:", receipt);
+      alert("Payment successful!");
+    })
+    .catch(function (error) {
+      console.error("Error processing payment:", error);
+      alert("Error processing payment. Please try again.");
+    });
+}
+
+export { web3, musicContract, getAllMusicWorks, payForMusicWork };
